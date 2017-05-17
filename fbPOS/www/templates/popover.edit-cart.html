@@ -1,0 +1,61 @@
+<ion-popover-view class="edit-cart-popover" style="left:none !important;left:100px;">
+    <div class="arrow-top" ng-show="slectIndex==$index"></div>
+    <ion-header-bar style="background-color:white;">
+        <button class="button button-white large-icon-button ion-close-round" ng-click="popoverBack()"></button>
+        <!--<ion-toggle class="icon-text-toggle" ng-checked="toggleTab" ng-click="toggleProductServe(cartItem)" on-drag-left="toggleTab?toggleProductServe(cartItem):''" on-drag-right="!toggleTab?toggleProductServe(cartItem):''">
+            <div class="toggle-text toggle-text-active" ng-show="toggleTab">
+                <img src="img/2.0icon/tick.png" />
+                <div class="inline-text">{{ 'SERVED' | translate}}</div>
+            </div>
+            <div class="toggle-text" ng-show="!toggleTab">
+                <img src="img/2.0icon/cross.png" />
+                <div class="inline-text">{{ 'NOT_SERVED' | translate}}</div>
+            </div>
+        </ion-toggle>-->
+        <ti-segmented-control class="serve-segment">
+            <ti-segmented-control-button  ng-click="chooseServe(item, serveStatus[0])" ng-class="currentServeStatus.id==0?'button-warn':'serve-button'" title="serveStatus[0].name"></ti-segmented-control-button>
+            <ti-segmented-control-button  ng-click="chooseServe(item, serveStatus[2])" ng-class="currentServeStatus.id==2?'button-orange':'serve-button'" title="serveStatus[2].name"></ti-segmented-control-button>
+            <ti-segmented-control-button  ng-click="chooseServe(item, serveStatus[1])" ng-class="currentServeStatus.id==1?'button-active':'serve-button'" title="serveStatus[1].name"></ti-segmented-control-button>
+        </ti-segmented-control>   
+        <button class="button button-white large-icon-button ion-android-delete" style="right:1%;position:absolute;" ng-click="confirmDeleteEditCartItem(cartItem)"></button>
+    </ion-header-bar>
+    <ion-content has-bouncing="false" class="has-qty-footer">
+        <div id="edit-cart-slide-bar" class="slide-title-bar" style="overflow-x: auto;overflow-y:hidden;">
+            <div class="slide-title" ng-repeat="spec in selectSpecifications" id="{{$index}}" ng-if="spec.enabled && spec.selectible && spec.options.length" ng-click="activeSlide($index)" ng-class="slectIndex==$index ? 'tab_select' : '' ">
+                {{spec.title}}
+            </div>
+        </div>
+        <ion-slide-box class="slide-content" on-slide-changed="slideChanged(index)" active-slide="slideIndex" does-continue="false" show-pager="false">
+            <ion-slide ng-repeat="(key,spec) in selectSpecifications">
+                <scroll direction="y">
+                    <div class="row" ng-repeat="option in spec.options" ng-click="option.selected?resetCartItem(cartItem,spec,option):editCartOptions(cartItem,key, spec.dictionary, option.id);" ng-class="option.selected? 'c-pay-method' : ''">
+                        <div class="col col-50">{{ option.name }}</div>
+                        <div class="col col-50 text-right">{{ option.sign }}${{ option.price }}</div>
+                    </div>
+                </scroll>
+            </ion-slide>
+        </ion-slide-box>
+        <!--<ion-slide-box class="slide-content" on-slide-changed="slideChanged(index)" active-slide="slideIndex" does-continue="false" show-pager="false">
+            <ion-slide ion-slide-tab-label="selectSpecifications[$index].title" ng-repeat="(key,spec) in selectSpecifications">
+                <scroll direction="y">
+                    <div class="row" ng-repeat="option in spec.options" ng-click="option.selected?resetCartItem(cartItem,spec,option):editCartOptions(cartItem,key, spec.dictionary, option.id);" ng-class="option.selected? 'c-pay-method' : ''">
+                        <div class="col col-50">{{ option.name }}</div>
+                        <div class="col col-50 text-right">{{ option.sign }}${{ option.price }}</div>
+                    </div>
+                </scroll>
+            </ion-slide>
+        </ion-slide-box>        -->
+    </ion-content>
+    <!--<div class="remark-footer has-qty-footer">
+        <textarea rows="2" placeholder="{{ 'REMARK' | translate}}"></textarea>
+    </div>-->
+    <div class="popover-footer qty-footer">
+        <div class="row">
+            <div class="col col-42 qty-box"> {{ 'QTY' | translate }}: {{ cartItem.qty }}</div>
+            <div class="col col-42 pull-right qty-edit-box">
+                <div class="qty-minus" ng-click="minusAddQty(cartItem)" ng-disabled="cartItem.qty==1"><i class="ion-ios-minus-empty"></i></div>
+                <div class="qty-plus" ng-click="plusAddQty(cartItem)"><i class="ion-ios-plus-empty"></i></div>
+            </div>
+        </div>
+    </div>
+</ion-popover-view>

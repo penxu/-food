@@ -1,0 +1,15 @@
+=======================
+version 2.2.0516.1:
+
+1、打印页面，安卓禁止返回键返回，Fix Bug：#2678 #2676；
+2、添加Order打印：1、加入product到cart list，点Order打印，打印厨单，自动修改所有cart list商品状态Ordered为Preparing；2、继续添加商品，点Order打印，pop window选择打印类型，new order打印刚刚添加的商品，同时厨单下面出现Add Order提示，Reprint打印当前cart list的所有商品，同时厨单下面出现Reprint提示，两种类型都自动修改所有cart list商品状态Ordered为Preparing；3、cart list中没有Ordered状态的商品，点Order打印，此时相当于Reprint打印当前cart list的所有商品，同时厨单下面出现Reprint提示；
+3、禁止现有跳转页面的动画效果，减少页面跳转顿挫，修改提示 payed 为 paid；
+4、Fix Order History和Product List 搜索框不为空的时候下拉刷新结果不正确的bug；
+5、订单未支付显示Invoice打印，此时打印Invoice不显示payment信息，若订单已支付则显示Receipt打印，此时打印Receipt会显示payment信息。
+
+
+=======================
+version 2.2.0516.2:
+1、Fix hold之后，在serving list中删除刚刚hold的订单，订单被删除，这时候加product，提示Invoice not found. 的bug。原因：删除的订单ID没有及时清除；
+2、查看order history之后可以选择是否需要打印；
+3、Fix 按invoice打印也会修改cart list商品状态Ordered为Preparing的bug；

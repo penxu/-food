@@ -1,0 +1,5 @@
+<ion-modal-view class="number-modal">
+    <input tyle="number" ng-model="tempTableNum" ng-change="changeTableTemp(tempTableNum)" class="number-input"/>
+    <div class="left-button" ng-click="hideTableNumModal()">{{ 'CANCEL' | translate }}</div>
+    <div class="right-button" ng-click="tableOperation.changeTableNum(tempTableNum)">{{ 'CONFIRM' | translate }}</div>
+</ion-modal-view>

@@ -1,0 +1,20 @@
+<ion-modal-view class="modal-reserve">
+  <ion-content class="has-modal-footer pad-ms">
+    <div>
+      <div class="reserve-box">
+        {{ 'CONFIRM' | translate }}
+        <div class="product-qty">
+          <span>
+                {{'IS_PRINT_ORDER_HISTORY' | translate}}
+          </span>
+        </div>
+      </div>
+    </div>
+  </ion-content>
+  <div class="modal-footer">
+    <button class="button button-clear button-energized pull-left" ng-click="viewPrintBox.back();">{{ 'CANCEL' | translate }}</button>
+    <button class="button button-clear button-energized pull-right" ng-click="viewInvoiceC.print()">{{ 'PRINT' | translate }}</button>
+    <!-- <button class="button button-clear button-energized pull-right" ng-click="confirmPayment()" ng-if="$root.currentOrderType.id != 2">{{ 'CONFIRM' | translate }}</button> -->
+
+  </div>
+</ion-modal-view>

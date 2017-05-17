@@ -1,0 +1,50 @@
+<!--<div class="backdrop-shade" ng-show="showOtherCharge" ng-click="hidePopoverAction()">-->
+    <div class="select-popover-box" ng-click="$event.stopPropagation();">
+        <div class="other-charge-box-content">
+            <div class="other-charge-title">
+                <p>{{ popoverTitle }}</p>
+            </div>
+            <ion-content class="other-charge-scroll">
+                <div class="other-charge-content">
+
+                    <div class="row" ng-repeat="chargeInfo in otherCharges" ng-click="clickChargeItem($index);$event.stopPropagation();"  ng-class="chargeStatus[$index] ? 'chosen-color' : ''" ng-if="isDiscount && chargeInfo.sign=='-'">
+                        <div class="col col-50 col-left">
+                            <p ng-if="$root.currentLang=='EN_US'">{{chargeInfo.title_EN_US}}</p>
+                            <p ng-if="$root.currentLang=='ZH_CN'">{{chargeInfo.title_ZH_CN}}</p>
+                            <p ng-if="$root.currentLang=='ZH_HK'">{{chargeInfo.title_ZH_HK}}</p>
+                        </div>
+                        <div class="col col-50 col-middle">
+                            <p ng-if="chargeInfo.value_type!='percent'">({{otherCharges[$index].sign}})${{otherCharges[$index].value}}</p>
+                            <p ng-if="chargeInfo.value_type=='percent'">({{otherCharges[$index].sign}}){{otherCharges[$index].value}}%</p>
+                        </div>
+                        <!--<div class="col col-15 col-right" ng-click="editOtherCharge.editCharge(chargeInfo);$event.stopPropagation();">
+                            <p style="color:brown;">{{ 'EDIT' | translate}}</p>
+                        </div>-->
+                    </div>
+                    <div class="row" ng-repeat="chargeInfo in otherCharges" ng-click="clickChargeItem($index);$event.stopPropagation();"  ng-class="chargeStatus[$index] ? 'chosen-color' : ''" ng-if="!isDiscount && chargeInfo.sign=='+'">
+                        <div class="col col-50 col-left">
+                            <p ng-if="$root.currentLang=='EN_US'">{{chargeInfo.title_EN_US}}</p>
+                            <p ng-if="$root.currentLang=='ZH_CN'">{{chargeInfo.title_ZH_CN}}</p>
+                            <p ng-if="$root.currentLang=='ZH_HK'">{{chargeInfo.title_ZH_HK}}</p>
+                        </div>
+                        <div class="col col-50 col-middle">
+                            <p ng-if="chargeInfo.value_type!='percent'">({{otherCharges[$index].sign}})${{otherCharges[$index].value}}</p>
+                            <p ng-if="chargeInfo.value_type=='percent'">({{otherCharges[$index].sign}}){{otherCharges[$index].value}}%</p>                    
+                        </div>
+                        <!--<div class="col col-30 col-right">
+                            <table style="width:100%;">
+                                <tr>
+                                    <td style="width:10%"><i class="icon ion-ios-minus-outline plus"></i></td>
+                                    <td style="width:80%;text-align: center;"><div class="value">0</div></td>
+                                    <td style="width:10%"><i class="icon ion-ios-plus-outline minus"></i></td>
+                                </tr>
+                            </table>
+                        </div>-->
+                    </div>
+
+
+                </div>
+            </ion-content>
+        </div>
+    </div>    
+<!--</div>-->

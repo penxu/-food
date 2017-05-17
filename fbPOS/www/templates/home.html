@@ -1,0 +1,209 @@
+<ion-view class="animated fadeIn" hide-tabs>
+    <ion-content class="grey-bg" scroll="false">
+        <!-- <ng-include src="'templates/tpl.search-button-bar.html'"></ng-include> -->
+        <div class="main-content-left" ng-class="{ 'min' : cartDisplay == 'max', 'max' : cartDisplay == 'min' }">
+            <ng-include src="'templates/tpl.home-left.html'"></ng-include>
+        </div>
+        <div class="main-content-right" style="top: 0 !important;" ng-class="{ 'min' : cartDisplay == 'min', 'max' : cartDisplay == 'max' }">
+            <ng-include src="'templates/tpl.home-right.html'"></ng-include>
+        </div>
+        <!-- other charge pop over-->
+        <div class="backdrop-shade" ng-show="showOtherCharge" ng-click="hidePopoverAction('charge')">
+            <!--<ng-include src="templates/tpl.popover-other-charge.html"></ng-include>            -->
+            <div class="select-popover-box" ng-click="$event.stopPropagation();">
+                <div class="other-charge-box-content">
+                    <div class="other-charge-title">
+                        <p>{{ popoverTitle }}</p>
+                    </div>
+                    <ion-content class="other-charge-scroll">
+                        <div class="other-charge-content">
+                            <div class="row" ng-repeat="chargeInfo in otherCharges" ng-click="clickChargeItem($index);$event.stopPropagation();" ng-class="chargeStatus[$index] ? 'chosen-color' : ''" ng-if="isDiscount && chargeInfo.sign=='-'">
+                                <div class="col col-50 col-left">
+                                    <p ng-if="$root.currentLang=='EN_US'">{{chargeInfo.title_EN_US}}</p>
+                                    <p ng-if="$root.currentLang=='ZH_CN'">{{chargeInfo.title_ZH_CN}}</p>
+                                    <p ng-if="$root.currentLang=='ZH_HK'">{{chargeInfo.title_ZH_HK}}</p>
+                                </div>
+                                <div class="col col-50 col-middle">
+                                    <p ng-if="chargeInfo.value_type!='percent'">({{otherCharges[$index].sign}})${{otherCharges[$index].value}}</p>
+                                    <p ng-if="chargeInfo.value_type=='percent'">({{otherCharges[$index].sign}}){{otherCharges[$index].value}}%</p>
+                                </div>
+                                <!--<div class="col col-15 col-right" ng-click="editOtherCharge.editCharge(chargeInfo);$event.stopPropagation();">
+                                        <p style="color:brown;">{{ 'EDIT' | translate}}</p>
+                                    </div>-->
+                            </div>
+                            <div class="row" ng-repeat="chargeInfo in otherCharges" ng-click="clickChargeItem($index);$event.stopPropagation();" ng-class="chargeStatus[$index] ? 'chosen-color' : ''" ng-if="!isDiscount && chargeInfo.sign=='+'">
+                                <div class="col col-50 col-left">
+                                    <p ng-if="$root.currentLang=='EN_US'">{{chargeInfo.title_EN_US}}</p>
+                                    <p ng-if="$root.currentLang=='ZH_CN'">{{chargeInfo.title_ZH_CN}}</p>
+                                    <p ng-if="$root.currentLang=='ZH_HK'">{{chargeInfo.title_ZH_HK}}</p>
+                                </div>
+                                <div class="col col-50 col-middle">
+                                    <p ng-if="chargeInfo.value_type!='percent'">({{otherCharges[$index].sign}})${{otherCharges[$index].value}}</p>
+                                    <p ng-if="chargeInfo.value_type=='percent'">({{otherCharges[$index].sign}}){{otherCharges[$index].value}}%</p>
+                                </div>
+                                <!--<div class="col col-30 col-right">
+                                        <table style="width:100%;">
+                                            <tr>
+                                                <td style="width:10%"><i class="icon ion-ios-minus-outline plus"></i></td>
+                                                <td style="width:80%;text-align: center;"><div class="value">0</div></td>
+                                                <td style="width:10%"><i class="icon ion-ios-plus-outline minus"></i></td>
+                                            </tr>
+                                        </table>
+                                    </div>-->
+                            </div>
+                        </div>
+                    </ion-content>
+                </div>
+            </div>
+        </div>
+        <!-- payment method pop over-->
+        <div class="backdrop-shade" ng-show="showPaymentMethod" ng-click="hidePopoverAction('payment')">
+            <div class="select-popover-box" ng-click="$event.stopPropagation();">
+                <div class="select-popover-title"><span>{{ 'PAYMENT_TYPE' | translate }}</span></div>
+                <!--<div class="arrow-top " ng-show="slectIndex==$index "></div>-->
+                <ion-scroll style="bottom: 0;left: 0;position: absolute;" class="select-content">
+                    <ion-list ng-if="choosePaymentList">
+                        <ion-item ng-repeat="paymentInfo in choosePaymentList" ng-if="$index % 3 == 0" style="background-color: #fff;margin: 0px;padding: 0px;border-width: 0px;">
+                            <div class="select-popover-content">
+                                <div class="select-type-box pull-left col col-33 " ng-if="choosePaymentList[$index]" ng-class="choosePaymentList[$index].id==currentPayment.id ? 'active-button' : ''" ng-click="editPayType.choosePayment(choosePaymentList[$index])">
+                                    <div class="select-img "><img src="img/2.0icon/icon-pay/{{choosePaymentList[$index].name}}.png" alt=" "></div>
+                                    <div class="select-text "><span>{{choosePaymentList[$index].translateKey | translate}}</span></div>
+                                </div>
+                                <div class="select-type-box pull-left col col-33 " ng-if="choosePaymentList[$index+1]" ng-class="choosePaymentList[$index+1].id==currentPayment.id ? 'active-button' : ''" ng-click="editPayType.choosePayment(choosePaymentList[$index+1])">
+                                    <div class="select-img "><img src="img/2.0icon/icon-pay/{{choosePaymentList[$index+1].name}}.png" alt=" "></div>
+                                    <div class="select-text "><span>{{choosePaymentList[$index+1].translateKey | translate}}</span></div>
+                                </div>
+                                <div class="select-type-box pull-left col col-33 " ng-if="choosePaymentList[$index+2]" ng-class="choosePaymentList[$index+2].id==currentPayment.id ? 'active-button' : ''" ng-click="editPayType.choosePayment(choosePaymentList[$index+2])">
+                                    <div class="select-img "><img src="img/2.0icon/icon-pay/{{choosePaymentList[$index+2].name}}.png" alt=" "></div>
+                                    <div class="select-text "><span>{{choosePaymentList[$index+2].translateKey | translate}}</span></div>
+                                </div>
+                            </div>
+                            <div class="order-type-expand" ng-class="orderTypeExpand?'expend-box':'shrink-box'" ng-if="$root.currentPayment.id==1 && $index==0">
+                                <div class="order-type-box">
+                                    <div class="title-row">
+                                        {{ 'CASH_RECEIVED' | translate }}
+                                    </div>
+                                    <div class="row">
+                                        <div class="fix-value">$</div>
+                                        <input type="number" ng-class="receivedLess ? 'alert-input':''" ng-model="receivedMoney.value" ng-change="editPayType.changeReceivedMoney(receivedMoney.value)" />
+                                    </div>
+                                    <div class="row">
+                                        <div class="slide-title-bar" style="overflow-x: auto;overflow-y:hidden;">
+                                            <div class="slide-title" ng-class="clickMoney==cart.temp_grand_total?'chosen-color':''" ng-click="editPayType.clickReceivedMoney(cart.temp_grand_total)">
+                                                {{ 'EXACT' | translate }}
+                                            </div>
+                                            <div class="slide-title" ng-class="clickMoney==money?'chosen-color':''" ng-repeat="money in selectMoney" ng-click="editPayType.clickReceivedMoney(money)" ng-if="money >= cart.temp_grand_total">
+                                                ${{money}}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="title-row">
+                                        {{ 'CHANGES' | translate }}
+                                    </div>
+                                    <div class="row">
+                                        <div class="fix-value">$</div>
+                                        <input type="number" ng-class="receivedLess ? 'alert-input':''" ng-model="changesMoney" readonly/>
+                                    </div>
+                                </div>
+                            </div>
+                        </ion-item>
+                    </ion-list>
+                </ion-scroll>
+            </div>
+        </div>
+        <!-- order type pop over-->
+        <div class="backdrop-shade" ng-show="showOrderType" ng-click="hidePopoverAction('orderType')">
+            <div class="select-popover-box" ng-click="$event.stopPropagation();">
+                <div class="select-popover-title"><span>{{ 'ORDER_TYPE' | translate }}</span></div>
+                <!--<div class="arrow-top " ng-show="slectIndex==$index "></div>-->
+                <ion-content class="select-content">
+                    <ion-list ng-if="chooseOrderTypeList">
+                        <ion-item ng-repeat="paymentInfo in chooseOrderTypeList" ng-if="$index % 3 == 0" style="background-color: #fff;margin: 0px;padding: 0px;border-width: 0px;">
+                            <div class="select-popover-content">
+                                <div class="select-type-box pull-left col col-33 " ng-if="chooseOrderTypeList[$index]" ng-class="chooseOrderTypeList[$index].id==currentOrderType.id ? 'active-button' : ''" ng-click="editPayType.chooseOrderType(chooseOrderTypeList[$index])">
+                                    <div class="select-img "><img src="img/2.0icon/icon-nav/{{chooseOrderTypeList[$index].name}}.png" alt=" "></div>
+                                    <div class="select-text "><span>{{chooseOrderTypeList[$index].translateKey | translate}}</span></div>
+                                </div>
+                                <div class="select-type-box pull-left col col-33 " ng-if="chooseOrderTypeList[$index+1]" ng-class="chooseOrderTypeList[$index+1].id==currentOrderType.id ? 'active-button' : ''" ng-click="editPayType.chooseOrderType(chooseOrderTypeList[$index+1])">
+                                    <div class="select-img "><img src="img/2.0icon/icon-nav/{{chooseOrderTypeList[$index+1].name}}.png" alt=" "></div>
+                                    <div class="select-text "><span>{{chooseOrderTypeList[$index+1].translateKey | translate}}</span></div>
+                                </div>
+                                <div class="select-type-box pull-left col col-33 " ng-if="chooseOrderTypeList[$index+2]" ng-class="chooseOrderTypeList[$index+2].id==currentOrderType.id ? 'active-button' : ''" ng-click="editPayType.chooseOrderType(chooseOrderTypeList[$index+2])">
+                                    <div class="select-img "><img src="img/2.0icon/icon-nav/{{chooseOrderTypeList[$index+2].name}}.png" alt=" "></div>
+                                    <div class="select-text "><span>{{chooseOrderTypeList[$index+2].translateKey | translate}}</span></div>
+                                </div>
+                            </div>
+                        </ion-item>
+                    </ion-list>
+                </ion-content>
+            </div>
+        </div>
+        <!-- print type pop over-->
+        <div class="backdrop-shade" ng-show="showPrintType" ng-click="hidePopoverAction('printType')">
+            <div class="select-popover-box" ng-click="$event.stopPropagation();">
+                <div class="select-popover-title"><span>{{ 'PRINT_ITEM' | translate }}</span></div>
+                <!--<div class="arrow-top " ng-show="slectIndex==$index "></div>-->
+                <ion-content class="select-content">
+                    <ion-list ng-if="choosePrintTypeList">
+                        <ion-item ng-repeat="printTypeInfo in choosePrintTypeList" ng-if="$index % 3 == 0" style="background-color: #fff;margin: 0px;padding: 0px;border-width: 0px;">
+                            <div class="select-popover-content">
+                                <div class="select-type-box pull-left col col-33 " ng-if="choosePrintTypeList[$index]" ng-class="'active-button'" ng-click="editPayType.choosePrintType(choosePrintTypeList[$index])">
+                                    <div class="select-img "><img src="img/2.0icon/icon-nav/{{choosePrintTypeList[$index].name}}.png" alt=" "></div>
+                                    <div class="select-text "><span>{{choosePrintTypeList[$index].translateKey | translate}}</span></div>
+                                </div>
+                                <div class="select-type-box pull-left col col-33 " ng-if="choosePrintTypeList[$index+1]" ng-class="'active-button'" ng-click="editPayType.choosePrintType(choosePrintTypeList[$index+1])">
+                                    <div class="select-img "><img src="img/2.0icon/icon-nav/{{choosePrintTypeList[$index+1].name}}.png" alt=" "></div>
+                                    <div class="select-text "><span>{{choosePrintTypeList[$index+1].translateKey | translate}}</span></div>
+                                </div>
+                                <div class="select-type-box pull-left col col-33 " ng-if="choosePrintTypeList[$index+2]" ng-class="'active-button'" ng-click="editPayType.choosePrintType(choosePrintTypeList[$index+2])">
+                                    <div class="select-img "><img src="img/2.0icon/icon-nav/{{choosePrintTypeList[$index+2].name}}.png" alt=" "></div>
+                                    <div class="select-text "><span>{{choosePrintTypeList[$index+2].translateKey | translate}}</span></div>
+                                </div>
+                            </div>
+                        </ion-item>
+                    </ion-list>
+                </ion-content>
+            </div>
+        </div>
+        <!-- table pop over-->
+        <div class="backdrop-shade" ng-show="showTable" ng-click="$root.tableOperation.showOrHide(false)">
+            <div class="select-popover-box select-table-box" ng-click="$event.stopPropagation();">
+                <!--<div class="select-popover-title"><span>{{ 'TABLE' | translate }}</span></div>-->
+                <!--<div class="arrow-top " ng-show="slectIndex==$index "></div>-->
+                <ion-content class="select-content">
+                    <ion-list ng-if="chooseOrderTypeList">
+                        <ion-item ng-repeat="tableInfo in $root.tableData" ng-if="$index % 6 == 0" style="background-color: #fff;margin: 0px;padding: 0px;border-width: 0px;">
+                            <div class="select-popover-content">
+                                <div class="select-type-box pull-left col col-33 " ng-if="tableData[$index]" ng-click="tableOperation.chooseTable($index)">
+                                    <!--<div class="select-img "><img src="img/2.0icon/icon-nav/dinein.png" alt=" "></div>-->
+                                    <div class="select-text"><span>{{tableData[$index].name}}</span></div>
+                                    <div class="table-tab" ng-class="tableData[$index].invoice.length>0 ? 'active-box' : ''"></div>
+                                </div>
+                                <div class="select-type-box pull-left col col-33 " ng-if="tableData[$index+1]" ng-click="tableOperation.chooseTable($index+1)">
+                                    <div class="select-text"><span>{{tableData[$index+1].name}}</span></div>
+                                    <div class="table-tab" ng-class="tableData[$index+1].invoice.length>0 ? 'active-box' : ''"></div>
+                                </div>
+                                <div class="select-type-box pull-left col col-33 " ng-if="tableData[$index+2]" ng-click="tableOperation.chooseTable($index+2)">
+                                    <div class="select-text"><span>{{tableData[$index+2].name}}</span></div>
+                                    <div class="table-tab" ng-class="tableData[$index+2].invoice.length>0 ? 'active-box' : ''"></div>
+                                </div>
+                                <div class="select-type-box pull-left col col-33 " ng-if="tableData[$index+3]" ng-click="tableOperation.chooseTable($index+3)">
+                                    <div class="select-text"><span>{{tableData[$index+3].name}}</span></div>
+                                    <div class="table-tab" ng-class="tableData[$index+3].invoice.length>0 ? 'active-box' : ''"></div>
+                                </div>
+                                <div class="select-type-box pull-left col col-33 " ng-if="tableData[$index+4]" ng-click="tableOperation.chooseTable($index+4)">
+                                    <div class="select-text"><span>{{tableData[$index+4].name}}</span></div>
+                                    <div class="table-tab" ng-class="tableData[$index+4].invoice.length>0 ? 'active-box' : ''"></div>
+                                </div>
+                                <div class="select-type-box pull-left col col-33 " ng-if="tableData[$index+5]" ng-click="tableOperation.chooseTable($index+5)">
+                                    <div class="select-text"><span>{{tableData[$index+5].name}}</span></div>
+                                    <div class="table-tab" ng-class="tableData[$index+5].invoice.length>0 ? 'active-box' : ''"></div>
+                                </div>
+                            </div>
+                        </ion-item>
+                    </ion-list>
+                </ion-content>
+            </div>
+        </div>
+    </ion-content>
+</ion-view>

@@ -1,0 +1,44 @@
+<div class="page">
+    <div class="header">
+        <img class="logo" src="{{ 'COMPANY_LOGO' | IMAGE }}" />
+        <div class="qr-code">
+            <p style="font-size: 240%">{{ 'TICKET_NO' | DATA }}</p>
+        </div>
+        <qrcode data="string"></qrcode>
+    </div>
+    <div class="body">
+        <table class="customer-table">
+            <tr>
+                <td>{{ 'INVOICE_DATE' | TRANSLATE }}</td>
+                <td>{{ 'INVOICE_DATE' | DATA }}</td>
+            </tr>
+            <tr>
+                <td>{{ 'TABLE_NO' | TRANSLATE }}</td>
+                <td>{{ 'TABLE_NUM' | DATA }}</td>
+            </tr>
+        </table>
+        <table class="product-table">
+            <tr>
+                <td>{{ 'INVOICE_PRODUCT_NAME' | TRANSLATE }}</td>
+                <td>{{ 'QTY' | TRANSLATE }}</td>
+                <td>{{ 'INVOICE_DIS' | TRANSLATE }}</td>
+                <td>{{ 'INVOICE_AMT' | TRANSLATE }}</td>
+            </tr>
+            {{ 'PRODUCT_ITEM' | TEMPLATE }}
+        </table>
+    </div>
+    <div class="footer" style="bottom:10px !important;">
+        <table>
+            <tr>
+                <td colspan="2">
+                    <!-- {{ 'THANK_YOU_FOR_SHOPPING' | TRANSLATE }}
+                    <br /> {{ 'SHOP_NAME' | DATA }}
+                    <br /> Tel: {{ 'SHOP_TEL' | DATA }}
+                    <br /> {{ 'SHOP_EMAIL' | DATA }} -->
+                    <br />{{ 'INVOICE_OPTION' | DATA }}
+                    <br />
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>

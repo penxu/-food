@@ -1,0 +1,153 @@
+<p class="lowlight text-center pad-top-sm" ng-show="cartDisplay != 'min'" ng-if="cart.products&&cart.products.length==0 && isNewOrder" style="font-size: 18px;margin-top: 60px;">
+    {{ 'THIS_CART_IS_EMPTY' | translate }}
+</p>
+<div class="cart-tab-content" ng-show="cartDisplay != 'min'">
+    <div ng-class="isNewOrder ? 'cart-tab-content-checked' : 'cart-tab-content-normal';" ng-click="selectNewOrderTab();">
+        <i class="icon ion-ios-star-outline"></i>
+        <span>{{ 'NEW_ORDER'|translate }}</span>
+    </div>
+    <div ng-class="isNewOrder ? 'cart-tab-content-normal' : 'cart-tab-content-checked';" ng-click="selectServingTab();">
+        <i class="icon ion-ios-checkmark-outline"></i>
+        <span>{{ 'SERVING'|translate }}</span>
+    </div>
+</div>
+<ion-content class="main-content has-content-footer cart-items cart-list-content" ng-show="isNewOrder" delegate-handle="cartlist">
+    <ion-list class="cart-item-list" ng-if="cart">
+        <ion-item ng-repeat="item in cart.products | filter:cartKeyword" ng-click="editCartItem(item,$event)">
+            <div>
+                <div ng-class="{'item-ordered':item.served==0,'item-preparing':item.served==2,'item-served':item.served==1 }"></div>
+                <div class="item-photo"><img ng-src="{{ item.photo }}" ng-show="item.photo" /></div>
+                <div class="item-detail">
+                    <p class="name">{{ item.name }}</p>
+                    <p class="option"><span ng-repeat="(key,option) in item.options"> {{ key | cartOptionsFormat }}{{ option.title }}:{{ option.options[0] }}</span> {{ ' ' }}</p>
+                    <p class="qty"><span>{{ 'QTY' | translate }}:</span> {{ item.qty }}</p>
+                    <p class="sub-total">${{ (1-$root.memberDiscountPercent) * item.sub_total | number:2 }}</p>
+                    <p class="through-text" ng-if="$root.memberDiscountPercent>0">${{item.sub_total | number:2 }}</p>
+                </div>
+            </div>
+        </ion-item>
+    </ion-list>
+</ion-content>
+<ion-content class="main-content has-content-footer serving-items cart-list-content" ng-show="!isNewOrder">
+    <ion-refresher on-refresh="loadServingList('refresh')"></ion-refresher>
+    <ion-list class="serving-item-list" ng-if="servingList">
+        <ion-item ng-repeat="serving in servingList | filter:cartKeyword" ng-click="loadServingCart(serving.id)">
+            <div class="row" style="background-color:white !important;height: 60px !important;">
+                <div class="item-photo" ng-if="serving.table_num != 0"><img src="img/2.0icon/icon-nav/dinein.png" /></div>
+                <div class="item-photo" ng-if="serving.table_num == 0"><img src="img/2.0icon/icon-nav/takeaway.png" /></div>
+                <div class="col col-34" ng-if="serving.table_num != 0">
+                    <p class="name">{{ 'TABLE_NO' | translate }}:{{ serving.table_num }}</p>
+                </div>
+                <div class="col col-34" ng-if="serving.table_num == 0">
+                    <p class="name">{{ 'TAKE_AWAY' | translate }}</p>
+                </div>
+                <div class="col col-25">
+                    <p class="qty"><span>{{ 'QTY' | translate }}:</span> {{ serving.served_qty }}</p>
+                </div>
+                <div class="col col-20">
+                    <h3 class="sub-total">${{ serving.price | number:2 }}</h3>
+                </div>
+                <ion-option-button class="button-assertive"  ng-click = "deleteServingCart(serving.id)">
+                    <i class = "icon ion-trash-a"></i>
+                </ion-option-button>
+            </div>
+        </ion-item>
+    </ion-list>
+    <!-- <ion-infinite-scroll ng-if="servingList.length != servingCount" on-infinite="loadServingList('more')" distance="1%"></ion-infinite-scroll> -->
+</ion-content>
+<div class="cart-total" ng-if="isNewOrder">
+    <div class="text-right">
+        <div class="price-title"><span class="text-des text-left pull-left">{{ 'ITEM_TOTAL' | translate }}</span>
+            <span class="pull-right">${{ cart.item_total | number:2 }}</span>
+        </div>
+    </div>
+    <div class="text-right" ng-click="editOtherCharge.popoverOtherCharge($event,true)">
+        <div class="price-title"><span class="text-des text-left pull-left" style="color:#007aff;">{{ 'DISCOUNT_TOTAL' | translate }}</span>
+            <span class="pull-right">(${{ cart.discount_total | number:2 }})</span>
+        </div>
+    </div>
+    <div class="text-right" ng-click="editOtherCharge.popoverOtherCharge($event,false)">
+        <div class="price-title"><span class="text-des pull-left" style="color:#007aff;">{{ 'SERVICE_TOTAL' | translate }}</span>
+            <span class="pull-right">${{ cart.service_total | number:2 }}</span>
+        </div>
+    </div>
+    <div class="text-right" ng-click="editPayType.popoverOrderType($event);">
+        <div class="price-title"><span class="text-des pull-left" style="color:#007aff;">{{ 'ORDER_TYPE' | translate }}</span>
+            <span class="pull-right" ng-if="currentOrderType.id == 1">{{currentOrderType.translateKey | translate}}-{{ $root.currentTable.name }}</span>
+            <span class="pull-right" ng-if="currentOrderType.id == 2">{{currentOrderType.translateKey | translate}}</span>
+        </div>
+    </div>
+    <div class="text-right" ng-click="editPayType.popoverPaymentType($event);">
+        <div class="price-title"><span class="text-des pull-left" style="color:#007aff;">{{ 'PAYMENT_TYPE' | translate }}</span>
+            <span class="pull-right">{{currentPayment.translateKey | translate}}</span>
+        </div>
+    </div>    
+    <div class="text-right" style="font-size:18px">
+        <div class="price-title"><span class="pull-left">{{ 'GRAND_TOTAL' | translate }}</span>
+            <span class="pull-right">${{ cart.temp_grand_total | number:2 }}</span>
+        </div>
+    </div>
+</div>
+<div class="confirm-content" ng-show="cartDisplay != 'min'" ng-if="isNewOrder">
+    <div class="dinein-confirm-box pull-right" ng-click="popConfirmDialog();">
+        <div class="icon-confirm-out">
+            <img src="img/2.0icon/out.png" alt="">
+        </div>
+        <div class="confirm-text">
+            <text class="chectout">{{ 'PAY'|translate }}</text>
+        </div>
+    </div>
+    <div class="dinein-confirm-box pull-right" ng-click="processCheckout('receipt',false);">
+        <div class="icon-confirm-clear">
+            <img src="img/print.png" alt="">
+        </div>
+        <div class="confirm-text">
+            <text class="clear" ng-if="cart.payed_amount > 0">{{ 'PRINT_RECEIPT' |translate }}</text>
+            <text class="clear" ng-if="!cart.payed_amount || cart.payed_amount == 0">{{ 'PRINT_INVOICE'|translate }}</text>
+        </div>
+    </div>
+    <div class="dinein-confirm-box pull-right" ng-click="saveCart();">
+        <div class="icon-confirm-clear">
+            <img src="img/hold.png" alt="">
+        </div>
+        <div class="confirm-text">
+            <text class="clear">{{ 'HOLD'|translate }}</text>
+        </div>
+    </div>
+    <div class="dinein-confirm-box pull-right" ng-click="editPayType.popoverPrintType($event);">
+        <div class="icon-confirm-clear">
+            <img src="img/print.png" alt="">
+        </div>
+        <div class="confirm-text">
+            <text class="clear">{{ 'PRINT_ORDER'|translate }}</text>
+        </div>
+    </div>
+    <div class="dinein-confirm-box pull-right" ng-click="popClearDialog();">
+        <div class="icon-confirm-clear">
+            <img src="img/2.0icon/reset.png" alt="">
+        </div>
+        <div class="confirm-text">
+            <text class="clear">{{ 'CLEAR_ALL'|translate }}</text>
+        </div>
+    </div>
+</div>
+<!-- <div class="confirm-content" ng-show="cartDisplay != 'min'" ng-if="isNewOrder && $root.currentOrderType.id == 2">
+    <div class="takeaway-confirm-box pull-right" ng-click="processCheckout();">
+        <div class="icon-confirm-out">
+            <img src="img/2.0icon/out.png" alt="">
+        </div>
+        <div class="confirm-text">
+            <text class="chectout">{{ 'CHECK_OUT'|translate }}</text>
+        </div>
+    </div>
+    <div class="takeaway-confirm-box pull-right" ng-click="$root.clearCart();">
+        <div class="icon-confirm-clear">
+            <img src="img/2.0icon/reset.png" alt="">
+        </div>
+        <div class="confirm-text">
+            <text class="clear">{{ 'CLEAR_ALL'|translate }}</text>
+        </div>
+    </div>
+</div> -->
+<div class="collapse-btn" ng-click="expandCart()"><i class="fa fa-angle-double-left"></i></div>
+<div class="expand-btn" ng-click="collapseCart()"><i class="fa fa-angle-double-right"></i></div>
